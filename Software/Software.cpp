@@ -11,6 +11,7 @@
 #include "src/communication/Transmitter.h"
 #include "src/communication/can/comm_can.h"
 #include "src/communication/contactorcontrol/comm_contactorcontrol.h"
+#include "src/communication/coolant_pump_control/coolant_pump_control.h"
 #include "src/communication/equipmentstopbutton/comm_equipmentstopbutton.h"
 #include "src/communication/nvm/comm_nvm.h"
 #include "src/communication/precharge_control/precharge_control.h"
@@ -538,6 +539,7 @@ void core_loop(void*) {
         check_interconnect_available(3);
       }
       update_calculated_values(currentMillis);
+      handle_coolant_pump_control(currentMillis);
       update_machineryprotection();  // Check safeties
 
       // Update values heading towards inverter
@@ -633,6 +635,7 @@ void setup() {
   init_contactors();
 
   init_precharge_control();
+  init_coolant_pump_control();
 
   setup_charger();
   setup_inverter();

@@ -160,6 +160,10 @@ class Esp32Hal {
   virtual gpio_num_t DISPLAY_SDA_PIN() { return GPIO_NUM_NC; }
   virtual gpio_num_t DISPLAY_SCL_PIN() { return GPIO_NUM_NC; }
 
+  // Coolant pump control
+  virtual gpio_num_t COOLANT_PUMP_PWM_PIN() { return GPIO_NUM_NC; }
+  virtual gpio_num_t COOLANT_PUMP_FEEDBACK_PIN() { return GPIO_NUM_NC; }
+
   // Equipment stop pin
   virtual gpio_num_t EQUIPMENT_STOP_PIN() { return GPIO_NUM_NC; }
 
@@ -209,3 +213,4 @@ extern Esp32Hal* esp32hal;
 void init_hal();
 
 #endif
+
