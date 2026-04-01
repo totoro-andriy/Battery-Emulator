@@ -121,6 +121,8 @@ static const std::map<int, String> sungrow_models = {
     {3, "SBR160 (16.0 kWh, 5 modules)"}, {4, "SBR192 (19.2 kWh, 6 modules)"}, {5, "SBR224 (22.4 kWh, 7 modules)"},
     {6, "SBR256 (25.6 kWh, 8 modules)"}};
 
+static const std::map<int, String> pylon_models = {{0, "PYLONTECH"}, {1, "PYLON"}, {2, "DEYE"}};
+
 const char* name_for_button_type(STOP_BUTTON_BEHAVIOR behavior) {
   switch (behavior) {
     case STOP_BUTTON_BEHAVIOR::LATCHING_SWITCH:
@@ -274,6 +276,10 @@ String settings_processor(const String& var, BatteryEmulatorSettingsStore& setti
 
   if (var == "SUNGROW_MODEL") {
     return options_from_map(settings.getUInt("INVSUNTYPE", 1), sungrow_models);  // Default: SBR096
+  }
+
+  if (var == "PYLON_MODEL") {
+    return options_from_map(settings.getUInt("PYLONBRAND", 0), pylon_models);
   }
 
 #ifdef HW_LILYGO2CAN
@@ -1131,7 +1137,16 @@ const char* getCANInterfaceName(CAN_Interface interface) {
     
 
     form .if-cbms { display: none; }
-    form[data-battery="6"] .if-cbms, form[data-battery="11"] .if-cbms, form[data-battery="22"] .if-cbms, form[data-battery="23"] .if-cbms, form[data-battery="24"] .if-cbms, form[data-battery="31"] .if-cbms, form[data-battery="41"] .if-cbms, form[data-battery="48"] .if-cbms, form[data-battery="49"] .if-cbms {
+    form[data-battery="6"] .if-cbms,
+    form[data-battery="11"] .if-cbms,
+    form[data-battery="22"] .if-cbms,
+    form[data-battery="23"] .if-cbms,
+    form[data-battery="24"] .if-cbms,
+    form[data-battery="31"] .if-cbms,
+    form[data-battery="41"] .if-cbms,
+    form[data-battery="48"] .if-cbms,
+    form[data-battery="49"] .if-cbms,
+    form[data-battery="51"] .if-cbms {
       display: contents;
     }
 
@@ -1156,7 +1171,8 @@ const char* getCANInterfaceName(CAN_Interface interface) {
     form[data-battery="33"] .if-estimated,
     form[data-battery="40"] .if-estimated,
     form[data-battery="41"] .if-estimated,
-    form[data-battery="44"] .if-estimated {
+    form[data-battery="44"] .if-estimated,
+    form[data-battery="51"] .if-estimated {
       display: contents;
     }
 
@@ -1431,6 +1447,9 @@ const char* getCANInterfaceName(CAN_Interface interface) {
         <label>Pylon, invert byteorder: </label>
         <input type='checkbox' name='PYLONORDER' value='on' %PYLONORDER% 
         title="When enabled, byteorder will be inverted on some signals, useful for some inverters that see wrong data otherwise" />
+
+        <label>Pylon, manufacturer name: </label>
+        <select name='PYLONBRAND'>%PYLON_MODEL%</select>
         </div>
 
         <div class="if-byd">
