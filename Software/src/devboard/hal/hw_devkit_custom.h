@@ -12,7 +12,11 @@ The pin layout below supports the following:
 
 class DevKitCustomHal : public Esp32Hal {
  public:
-  const char* name() { return "ESP32 DevKit Cuystom"; }
+  const char* name() { return "ESP32 DevKit Custom"; }
+
+  //CAN_NATIVE
+  virtual gpio_num_t CAN_TX_PIN() { return GPIO_NUM_27; }
+  virtual gpio_num_t CAN_RX_PIN() { return GPIO_NUM_26; }
 
   // CAN_ADDON (MCP2515)
   virtual gpio_num_t MCP2515_SCK()  { return GPIO_NUM_18; } // D18
@@ -24,6 +28,7 @@ class DevKitCustomHal : public Esp32Hal {
   // i2c display (SSD1306)
   virtual gpio_num_t DISPLAY_SDA_PIN() override { return GPIO_NUM_21; } // D21
   virtual gpio_num_t DISPLAY_SCL_PIN() override { return GPIO_NUM_22; } // D22
+  
   // Coolant Pump Pins
   virtual gpio_num_t COOLANT_PUMP_PWM_PIN() override { return GPIO_NUM_25; }
   virtual gpio_num_t COOLANT_PUMP_FEEDBACK_PIN() override { return GPIO_NUM_26; }
@@ -37,7 +42,8 @@ class DevKitCustomHal : public Esp32Hal {
 
   std::vector<comm_interface> available_interfaces() {
     return {
-        comm_interface::CanAddonMcp2515
+        comm_interface::CanAddonMcp2515,
+        comm_interface::CanNative
     };
   }
 };
