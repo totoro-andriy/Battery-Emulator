@@ -31,7 +31,7 @@ class DevKitCustomHal : public Esp32Hal {
   
   // Coolant Pump Pins
   virtual gpio_num_t COOLANT_PUMP_PWM_PIN() override { return GPIO_NUM_25; }
-  virtual gpio_num_t COOLANT_PUMP_FEEDBACK_PIN() override { return GPIO_NUM_26; }
+
 
   // LED
   virtual gpio_num_t LED_PIN() { return GPIO_NUM_4; }
