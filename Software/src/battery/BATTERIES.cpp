@@ -309,6 +309,9 @@ void setup_battery() {
       case BatteryType::CmpSmartCar:
         battery2 = new CmpSmartCarBattery(&datalayer.battery2, nullptr, can_config.battery_double);
         break;
+      case BatteryType::StellantisEcmp:
+        battery2 = new EcmpBattery(&datalayer.battery2, can_config.battery_double);
+        break;
       case BatteryType::KiaHyundai64:
         battery2 = new KiaHyundai64Battery(&datalayer.battery2, &datalayer_extended.KiaHyundai64_2,
                                            &datalayer.system.status.battery2_allowed_contactor_closing,
@@ -370,10 +373,17 @@ bool user_selected_tesla_GTW_rightHandDrive = true;
 uint16_t user_selected_tesla_GTW_mapRegion = 2;
 uint16_t user_selected_tesla_GTW_chassisType = 2;
 uint16_t user_selected_tesla_GTW_packEnergy = 1;
+/* User-selected DALY BMS settings */
+int user_selected_daly_power_per_percent = 50;
+int user_selected_daly_power_per_dV = 50;
+int user_selected_daly_power_per_dV_start = 20;
+int user_selected_daly_power_per_degree_C = 60;
+int user_selected_daly_power_at_0_degree_C = 800;
 /* User-selected EGMP+others settings */
 bool user_selected_use_estimated_SOC = false;
 uint16_t user_selected_pylon_baudrate = 500;
-
+/* For custom BMS which need rampdown. SOC% to start ramping down from max charge power towards 0 at 100.00%*/
+uint16_t user_set_rampdown_SOC = 9000;  //9000 = 90.00%
 // Use 0V for user selected cell/pack voltage defaults (On boot will be replaced with saved values from NVM)
 uint16_t user_selected_max_pack_voltage_dV = 0;
 uint16_t user_selected_min_pack_voltage_dV = 0;

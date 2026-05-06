@@ -395,21 +395,22 @@ void init_webserver() {
   });
 
   const char* boolSettingNames[] = {
-      "DBLBTR",        "CNTCTRL",      "CNTCTRLDBL",  "PWMCNTCTRL",   "PERBMSRESET",   "SDLOGENABLED", "STATICIP",
-      "REMBMSRESET",   "EXTPRECHARGE", "USBENABLED",  "CANLOGUSB",    "WEBENABLED",    "CANFDASCAN",   "CANLOGSD",
-      "WIFIAPENABLED", "MQTTENABLED",  "NOINVDISC",   "HADISC",       "MQTTTOPICS",    "MQTTCELLV",    "INVICNT",
-      "GTWRHD",        "DIGITALHVIL",  "PERFPROFILE", "INTERLOCKREQ", "SOCESTIMATED",  "PYLONOFFSET",  "PYLONORDER",
-      "DEYEBYD",       "NCCONTACTOR",  "TRIBTR",      "CNTCTRLTRI",   "ESPNOWENABLED", "PRIMOGEN24",   "CTINVERT",
+      "DBLBTR",       "CNTCTRL",      "CNTCTRLDBL",    "PWMCNTCTRL",  "PERBMSRESET", "SDLOGENABLED",
+      "STATICIP",     "REMBMSRESET",  "EXTPRECHARGE",  "USBENABLED",  "CANLOGUSB",   "WEBENABLED",
+      "CANFDASCAN",   "CANLOGSD",     "WIFIAPENABLED", "MQTTENABLED", "NOINVDISC",   "HADISC",
+      "MQTTTOPICS",   "MQTTCELLV",    "INVICNT",       "GTWRHD",      "DIGITALHVIL", "PERFPROFILE",
+      "INTERLOCKREQ", "SOCESTIMATED", "PYLONOFFSET",   "PYLONORDER",  "DEYEBYD",     "NCCONTACTOR",
+      "TRIBTR",       "CNTCTRLTRI",   "ESPNOWENABLED", "PRIMOGEN24",  "CTINVERT",    "LOWPASSFILTER",
   };
 
   const char* uintSettingNames[] = {
-      "BATTCVMAX",  "BATTCVMIN",  "MAXPRETIME", "MAXPREFREQ", "WIFICHANNEL", "DCHGPOWER", "CHGPOWER",
-      "LOCALIP1",   "LOCALIP2",   "LOCALIP3",   "LOCALIP4",   "GATEWAY1",    "GATEWAY2",  "GATEWAY3",
-      "GATEWAY4",   "SUBNET1",    "SUBNET2",    "SUBNET3",    "SUBNET4",     "MQTTPORT",  "MQTTTIMEOUT",
-      "SOFAR_ID",   "PYLONSEND",  "INVCELLS",   "INVMODULES", "INVCELLSPER", "INVVLEVEL", "INVCAPACITY",
-      "INVBTYPE",   "CANFREQ",    "CANFDFREQ",  "PRECHGMS",   "PWMFREQ",     "PWMHOLD",   "GTWCOUNTRY",
-      "GTWMAPREG",  "GTWCHASSIS", "GTWPACK",    "LEDMODE",    "GPIOOPT1",    "GPIOOPT2",  "GPIOOPT3",
-      "INVSUNTYPE", "GPIOOPT4",   "CTVNOM",     "CTANOM",     "CTATTEN",     "PYLONBAUD", "PYLONBRAND",
+      "BATTCVMAX",  "BATTCVMIN",   "MAXPRETIME", "MAXPREFREQ",  "WIFICHANNEL", "DCHGPOWER", "CHGPOWER",    "LOCALIP1",
+      "LOCALIP2",   "LOCALIP3",    "LOCALIP4",   "GATEWAY1",    "GATEWAY2",    "GATEWAY3",  "GATEWAY4",    "SUBNET1",
+      "SUBNET2",    "SUBNET3",     "SUBNET4",    "MQTTPORT",    "MQTTTIMEOUT", "SOFAR_ID",  "PYLONSEND",   "INVCELLS",
+      "INVMODULES", "INVCELLSPER", "INVVLEVEL",  "INVCAPACITY", "INVBTYPE",    "CANFREQ",   "CANFDFREQ",   "PRECHGMS",
+      "PWMFREQ",    "PWMHOLD",     "GTWCOUNTRY", "GTWMAPREG",   "GTWCHASSIS",  "GTWPACK",   "LEDMODE",     "GPIOOPT1",
+      "GPIOOPT2",   "GPIOOPT3",    "INVSUNTYPE", "GPIOOPT4",    "CTVNOM",      "CTANOM",    "CTATTEN",     "PYLONBAUD",
+      "PYLONBRAND", "DALYPWRPCT",  "DALYPWRDV",  "DALYDVSTART", "DALYPWRDEG",  "DALYPWR0C", "RAMPDOWNSOC",
   };
 
   const char* stringSettingNames[] = {"APNAME",       "APPASSWORD", "HOSTNAME",        "MQTTSERVER",     "MQTTUSER",
@@ -1063,29 +1064,6 @@ String processor(const String& var) {
       content += "<h4>Temperature min/max: " + String(tempMinFloat, 1) + " &deg;C / " + String(tempMaxFloat, 1) +
                  " &deg;C</h4>";
 
-      content += "<h4>System status: ";
-      switch (datalayer.battery.status.bms_status) {
-        case ACTIVE:
-          content += String("OK");
-          break;
-        case UPDATING:
-          content += String("UPDATING");
-          break;
-        case FAULT:
-          content += String("FAULT");
-          break;
-        case INACTIVE:
-          content += String("INACTIVE");
-          break;
-        case STANDBY:
-          content += String("STANDBY");
-          break;
-        default:
-          content += String("??");
-          break;
-      }
-      content += "</h4>";
-
       if (battery && battery->supports_real_BMS_status()) {
         content += "<h4>Battery BMS status: ";
         switch (datalayer.battery.status.real_bms_status) {
@@ -1134,6 +1112,30 @@ String processor(const String& var) {
           }
         }
       }
+
+      content += "<h4>System status: ";
+      switch (datalayer.battery.status.bms_status) {
+        case ACTIVE:
+          content += String("OK");
+          break;
+        case UPDATING:
+          content += String("UPDATING");
+          break;
+        case FAULT:
+          content += String("FAULT ");
+          content += "<button onclick='Events()'>Inspect reason</button> ";
+          break;
+        case INACTIVE:
+          content += String("INACTIVE");
+          break;
+        case STANDBY:
+          content += String("STANDBY");
+          break;
+        default:
+          content += String("??");
+          break;
+      }
+      content += "</h4>";
 
       // Close the block
       content += "</div>";
@@ -1218,13 +1220,6 @@ String processor(const String& var) {
         }
         content += "<h4>Temperature min/max: " + String(tempMinFloat, 1) + " &deg;C / " + String(tempMaxFloat, 1) +
                    " &deg;C</h4>";
-        if (datalayer.battery.status.bms_status == ACTIVE) {
-          content += "<h4>System status: OK </h4>";
-        } else if (datalayer.battery.status.bms_status == UPDATING) {
-          content += "<h4>System status: UPDATING </h4>";
-        } else {
-          content += "<h4>System status: FAULT </h4>";
-        }
         if (datalayer.battery2.status.current_dA == 0) {
           content += "<h4>Battery idle</h4>";
         } else if (datalayer.battery2.status.current_dA < 0) {
@@ -1314,13 +1309,6 @@ String processor(const String& var) {
           }
           content += "<h4>Temperature min/max: " + String(tempMinFloat, 1) + " &deg;C / " + String(tempMaxFloat, 1) +
                      " &deg;C</h4>";
-          if (datalayer.battery.status.bms_status == ACTIVE) {
-            content += "<h4>System status: OK </h4>";
-          } else if (datalayer.battery.status.bms_status == UPDATING) {
-            content += "<h4>System status: UPDATING </h4>";
-          } else {
-            content += "<h4>System status: FAULT </h4>";
-          }
           if (datalayer.battery3.status.current_dA == 0) {
             content += "<h4>Battery idle</h4>";
           } else if (datalayer.battery3.status.current_dA < 0) {
