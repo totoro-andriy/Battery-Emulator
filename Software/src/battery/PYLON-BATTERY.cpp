@@ -210,6 +210,7 @@ void PylonBattery::transmit_can(unsigned long currentMillis) {
     If the battery is in sleep status, wake up first then use this command.*/
 
     transmit_can_frame(&PYLON_3010);  // Heartbeat
+    transmit_can_frame(&PYLON_3050);  // LG ESS Heartbeat
     transmit_can_frame(&PYLON_4200);  // Ensemble OR System equipment info, depends on frame0
     transmit_can_frame(&PYLON_8200);  // Control device quit sleep status
     transmit_can_frame(&PYLON_8210);  // Charge command

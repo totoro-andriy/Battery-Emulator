@@ -59,6 +59,13 @@ class PylonBattery : public CanBattery {
                           .DLC = 8,
                           .ID = 0x3010,
                           .data = {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
+
+  CAN_frame PYLON_3050 = {.FD = false,
+                          .ext_ID = true,
+                          .DLC = 8,
+                          .ID = 0x3050,
+                          .data = {0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
+
   CAN_frame PYLON_8200 = {.FD = false,
                           .ext_ID = true,
                           .DLC = 8,
