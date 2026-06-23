@@ -23,6 +23,9 @@ void init_hal() {
 #elif defined(HW_WAVESHARE)
 #include "hw_waveshare.h"
   esp32hal = new WaveshareS3Rs485CanHal();
+#elif defined(HW_CUSTOM)
+#include "hw_custom.h"
+  esp32hal = new DevKitHal();
 #elif defined(HW_DEVKIT)
 #include "hw_devkit.h"
   esp32hal = new DevKitHal();
